@@ -62,7 +62,10 @@ void Snake::draw() {
     for (int i = 0; i < body.size(); i++) {
         int curX = this->body[i][0];
         int curY = this->body[i][1];
-        ofSetColor(ofColor::white);
+        ofSetColor(ofColor::lightGreen);
+        if(i == 0){
+            ofSetColor(ofColor::green);
+        }
         ofDrawRectangle(curX * segmentSize, curY * segmentSize, segmentSize, segmentSize);
     }
 }

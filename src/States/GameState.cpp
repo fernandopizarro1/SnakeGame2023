@@ -4,8 +4,8 @@
 GameState::GameState() {
     foodSpawned = false;
     cellSize = 25;
-    boardSizeWidth = 64;
-    boardSizeHeight = 36;
+    boardSizeWidth = 55;
+    boardSizeHeight = 30;
     snake = new Snake(cellSize, boardSizeWidth, boardSizeHeight);
 }
 //--------------------------------------------------------------
