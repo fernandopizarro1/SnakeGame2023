@@ -31,6 +31,7 @@ void GameState::update() {
 
     if(snake->getHead()[0] == currentFoodX && snake->getHead()[1] == currentFoodY) {
         snake->grow();
+        score += 10;
         foodSpawned = false;
     }
 
@@ -45,6 +46,7 @@ void GameState::draw() {
     drawBoardGrid();
     snake->draw();
     drawFood();
+    drawScore();
 }
 //--------------------------------------------------------------
 void GameState::keyPressed(int key) {
@@ -125,4 +127,9 @@ void GameState::drawBoardGrid() {
     // }
 }
 //--------------------------------------------------------------
-
+void GameState::drawScore() {
+    ofSetColor(ofColor::white);
+    string scoreStr = "SCORE: " + to_string(score);
+    ofDrawBitmapString(scoreStr, ofGetWidth()/2, 10);
+}
+//--------------------------------------------------------------

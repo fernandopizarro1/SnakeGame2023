@@ -17,8 +17,11 @@ class GameState : public State {
         void drawStartScreen();
         void drawLostScreen();
         void drawBoardGrid();
+        void drawScore();
 
         Snake* snake;
+
+        int score = 0;
         
         bool foodSpawned = false;
 
