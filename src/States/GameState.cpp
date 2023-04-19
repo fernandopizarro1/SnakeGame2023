@@ -69,6 +69,9 @@ void GameState::keyPressed(int key) {
         case 'u':
             snake->removeTail();
             break; 
+        case 'a':
+            score += 10;
+            break;
     }
 }
 //--------------------------------------------------------------
