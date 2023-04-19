@@ -24,7 +24,7 @@ void GameState::reset() {
 void GameState::update() {
 
     if(snake->isCrashed()) {
-        this->setNextState("MenuState");
+        this->setNextState("LoseState");
         this->setFinished(true);
         return;
     }
