@@ -27,6 +27,7 @@ public:
     void changeDirection(Direction d);
     void checkSelfCrash();
     void grow();
+    void removeTail(); 
     bool isCrashed() {
         return this->crashed;
     }
