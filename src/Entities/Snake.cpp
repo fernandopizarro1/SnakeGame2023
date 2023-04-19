@@ -99,3 +99,9 @@ void Snake::grow() {
     vector<int> newSegment = this->getTail();
     this->body.push_back(newSegment);
 }
+
+void Snake::removeTail(){
+    vector<int> lastSegment = this->getTail();
+    if(lastSegment == this->getBody()[2]) return; 
+    this->body.pop_back(); 
+}

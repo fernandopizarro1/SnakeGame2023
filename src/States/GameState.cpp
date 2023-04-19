@@ -49,7 +49,7 @@ void GameState::draw() {
 //--------------------------------------------------------------
 void GameState::keyPressed(int key) {
 
-    if(key != OF_KEY_LEFT && key != OF_KEY_RIGHT && key != OF_KEY_UP && key != OF_KEY_DOWN) { return; }
+    //if(key != OF_KEY_LEFT && key != OF_KEY_RIGHT && key != OF_KEY_UP && key != OF_KEY_DOWN) { return; }
 
     switch(key) {
         case OF_KEY_LEFT:
@@ -64,6 +64,9 @@ void GameState::keyPressed(int key) {
         case OF_KEY_DOWN:
             snake->changeDirection(DOWN);
             break;
+        case 'u':
+            snake->removeTail();
+            break; 
     }
 }
 //--------------------------------------------------------------
