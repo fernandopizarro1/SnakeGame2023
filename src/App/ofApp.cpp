@@ -8,6 +8,7 @@ void ofApp::setup(){
     gameState = new GameState();
     menuState = new MenuState();
     loseState = new LoseState();
+    pauseState = new PauseState();
     currentState = menuState;
 
 }
@@ -24,6 +25,9 @@ void ofApp::update(){
         } else if(currentState->getNextState() == "LoseState"){
             loseState->reset();
             currentState = loseState; 
+        } else if(currentState->getNextState() == "PauseState"){
+            pauseState->reset();
+            currentState = pauseState;
         }
     }
     currentState->update();
@@ -37,5 +41,9 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     currentState->keyPressed(key);
+}
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+    currentState->mousePressed(x, y, button);
 }
 //--------------------------------------------------------------

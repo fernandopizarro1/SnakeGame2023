@@ -37,3 +37,8 @@ void LoseState::keyPressed(int key) {
         return;
     }
 }
+//--------------------------------------------------------------
+void LoseState::mousePressed(int x, int y, int button){
+    
+}
+//--------------------------------------------------------------

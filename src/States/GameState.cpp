@@ -14,9 +14,13 @@ GameState::~GameState() {
 }
 //--------------------------------------------------------------
 void GameState::reset() {
-    delete snake;
-    snake = new Snake(cellSize, boardSizeWidth, boardSizeHeight);
-    foodSpawned = false;
+    if(getRestart()){
+        delete snake;
+        snake = new Snake(cellSize, boardSizeWidth, boardSizeHeight);
+        foodSpawned = false;
+        score = 0; 
+        setRestart(false);
+    }
     setFinished(false);
     setNextState("");
 }
@@ -25,6 +29,7 @@ void GameState::update() {
 
     if(snake->isCrashed()) {
         this->setNextState("LoseState");
+        this->setRestart(true);
         this->setFinished(true);
         return;
     }
@@ -72,6 +77,9 @@ void GameState::keyPressed(int key) {
         case 'a':
             score += 10;
             break;
+        case 'p':
+            setNextState("PauseState");
+            setFinished(true);
     }
 }
 //--------------------------------------------------------------
@@ -134,5 +142,9 @@ void GameState::drawScore() {
     ofSetColor(ofColor::white);
     string scoreStr = "SCORE: " + to_string(score);
     ofDrawBitmapString(scoreStr, ofGetWidth()/2, 10);
+}
+//--------------------------------------------------------------
+void GameState::mousePressed(int x, int y, int button){
+    
 }
 //--------------------------------------------------------------

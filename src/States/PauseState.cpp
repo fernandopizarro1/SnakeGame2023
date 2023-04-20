@@ -1,42 +1,50 @@
-#include "MenuState.h"
+#include "PauseState.h"
 
 //--------------------------------------------------------------
-MenuState::MenuState() {
-
+PauseState::PauseState() {
+    string text = "Continue?";
+    unpause = new Button(ofGetWidth() / 2 - 8*text.length()/2, ofGetHeight() / 2, 64, 15, "Continue?");
 }   
 //--------------------------------------------------------------
-MenuState::~MenuState() {
-
+PauseState::~PauseState() {
+    delete unpause; 
 }
 //--------------------------------------------------------------
-void MenuState::reset() {
+void PauseState::reset() {
     setFinished(false);
     setNextState("");
+    unpause->reset();
     return;
 }
 //--------------------------------------------------------------
-void MenuState::update() {
-
+void PauseState::update() {
+    if(unpause->wasPressed()){
+        setNextState("GameState");
+        setFinished(true);
+        return; 
+    }
 }
 //--------------------------------------------------------------
-void MenuState::draw() {
+void PauseState::draw() {
     ofSetColor(ofColor::black);
     ofDrawRectangle(0,0,ofGetWidth(),ofGetHeight());
     ofSetColor(ofColor::white);
-    string text = "Press any arrow key to start.";
+    string text = "The game is currently paused.";
     ofDrawBitmapString(text, ofGetWidth()/2-8*text.length()/2, ofGetHeight()/2-11);
+    unpause->SetColor(80,255,64);
+    unpause->draw(); 
     return;
 }
 //--------------------------------------------------------------
-void MenuState::keyPressed(int key) {
-    if(key == OF_KEY_LEFT || key == OF_KEY_RIGHT || key == OF_KEY_UP || key == OF_KEY_DOWN) {
+void PauseState::keyPressed(int key) {
+    if(key == OF_KEY_LEFT || key == OF_KEY_RIGHT || key == OF_KEY_UP || key == OF_KEY_DOWN || key == 'p') {
         setFinished(true);
         setNextState("GameState");
         return;
     }
 }
 //--------------------------------------------------------------
-void MenuState::mousePressed(int x, int y, int button){
-    
+void PauseState::mousePressed(int x, int y, int button){
+    unpause->mousePressed(x, y);
 }
 //--------------------------------------------------------------
