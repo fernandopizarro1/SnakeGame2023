@@ -19,13 +19,18 @@ class GameState : public State {
         void drawLostScreen();
         void drawBoardGrid();
         void drawScore();
+        void changeSong(string filename);
+
+        ofSoundPlayer sound;
+        vector<string>songs = {"80s_montage.mp3","cyberpunk_synthwave.mp3","Press_Fuse.mp3","welcome_to_the_grid.mp3"};
+        float progress = 0;
+        int song_index=0;
 
         Snake* snake;
 
-        int score = 0;
-        
         bool foodSpawned = false;
-
+        
+        int score = 0;
         int currentFoodX;
         int currentFoodY;
 

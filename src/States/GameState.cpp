@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 GameState::GameState() {
+    sound.load("80s_montage.mp3");    // Loads a sound file (in bin/data/)
+    sound.setVolume(1);               // Sets the song volume 
+    sound.play();
     foodSpawned = false;
     cellSize = 25;
     boardSizeWidth = 55;
@@ -26,6 +29,17 @@ void GameState::reset() {
 }
 //--------------------------------------------------------------
 void GameState::update() {
+    ofSoundUpdate();
+    if (sound.getPosition() >= .99) {
+        if (song_index < (songs.size() - 1)) {
+            changeSong(songs[song_index + 1]);
+            song_index++;
+        } else {
+            song_index = 0;
+            changeSong(songs[song_index]);
+        }
+    }
+    
 
     if(snake->isCrashed()) {
         this->setNextState("LoseState");
@@ -80,6 +94,9 @@ void GameState::keyPressed(int key) {
         case 'p':
             setNextState("PauseState");
             setFinished(true);
+        case 's':
+            sound.setPosition(.99);
+            break;
     }
 }
 //--------------------------------------------------------------
@@ -142,6 +159,11 @@ void GameState::drawScore() {
     ofSetColor(ofColor::white);
     string scoreStr = "SCORE: " + to_string(score);
     ofDrawBitmapString(scoreStr, ofGetWidth()/2, 10);
+}
+//--------------------------------------------------------------
+void GameState::changeSong(string filename){ 
+    sound.load(filename);
+    sound.play();
 }
 //--------------------------------------------------------------
 void GameState::mousePressed(int x, int y, int button){
