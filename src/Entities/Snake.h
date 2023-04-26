@@ -17,6 +17,8 @@ private:
     int boardSizeWidth, boardSizeHeight;
     int segmentSize;
     bool crashed;
+    bool activeBA = false; // active BETTERAPPLE
+    bool activeGM = false; // active GODMODE
 
 public:
     Snake(int segmentSize, int boardSizeW, int boardSizeH);
@@ -40,4 +42,7 @@ public:
     std::vector<std::vector<int>> getBody() {
         return this->body;
     }
+
+    void SetActiveBA(bool a) { this->activeBA = a; }
+    void SetActiveGM(bool g) { this->activeGM = g; }
 };

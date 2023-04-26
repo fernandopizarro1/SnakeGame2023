@@ -10,6 +10,7 @@ GameState::GameState() {
     boardSizeWidth = 55;
     boardSizeHeight = 30;
     snake = new Snake(cellSize, boardSizeWidth, boardSizeHeight);
+    currentPower = NA; 
 }
 //--------------------------------------------------------------
 GameState::~GameState() {
@@ -23,6 +24,9 @@ void GameState::reset() {
         foodSpawned = false;
         score = 0; 
         setRestart(false);
+        resetPower(); 
+        isPower = false;
+        currentPower = NA; 
     }
     setFinished(false);
     setNextState("");
@@ -40,6 +44,13 @@ void GameState::update() {
         }
     }
     
+    if(startTimer){
+        currentPower = NA;
+        ticks++;
+    }
+    if(ticks == 900){
+        resetPower();
+    }
 
     if(snake->isCrashed()) {
         this->setNextState("LoseState");
@@ -52,10 +63,13 @@ void GameState::update() {
         snake->grow();
         score += 10;
         foodSpawned = false;
+        if(isPower){
+            setPower();
+        }
     }
-
+    
     foodSpawner();
-    if(ofGetFrameNum() % 10 == 0) {
+    if(ofGetFrameNum() % framenumdivisor == 0) {
         snake->update();
     }
 
@@ -66,6 +80,11 @@ void GameState::draw() {
     snake->draw();
     drawFood();
     drawScore();
+    drawPower();
+    if(startTimer){
+        ofSetColor(ofColor::white);
+        ofDrawBitmapString("Your powerup is active, you cannot pickup any other powerups in the meantime!", 0, 30);
+    }
 }
 //--------------------------------------------------------------
 void GameState::keyPressed(int key) {
@@ -97,7 +116,39 @@ void GameState::keyPressed(int key) {
         case 's':
             sound.setPosition(.99);
             break;
+        case 'b':
+            usePower();
+            break;
     }
+}
+//--------------------------------------------------------------
+void GameState::usePower(){
+    startTimer = true;
+    switch(currentPower){
+        case SPEEDUP:
+            score -= 50; 
+            framenumdivisor = 5;
+            break;
+        case BETTERAPPLE:
+            score -= 100;
+            snake->SetActiveBA(true);
+            break;
+        case GODMODE:
+            score -= 150;
+            snake->SetActiveGM(true);
+            break;
+        case NA:
+            startTimer = false;
+            break;
+    }
+}
+//--------------------------------------------------------------
+void GameState::resetPower(){
+    startTimer = false;
+    ticks = 1;
+    framenumdivisor = 10;
+    snake->SetActiveBA(false);
+    snake->SetActiveGM(false);
 }
 //--------------------------------------------------------------
 void GameState::foodSpawner() {
@@ -117,9 +168,45 @@ void GameState::foodSpawner() {
     }
 }
 //--------------------------------------------------------------
+void GameState::drawPower(){
+    if(currentPower == SPEEDUP){
+        ofDrawBitmapString("Speed up is available! Press B to use it.", 0, 15);
+    } else if(currentPower == BETTERAPPLE){
+        ofDrawBitmapString("Better Apple is available! Press B to use it.", 0, 15);
+    } else if(currentPower == GODMODE){
+        ofDrawBitmapString("GODMODE is available! Press B to use it!", 0, 15);
+    }
+}
+//--------------------------------------------------------------
+void GameState::setPower(){
+    if(isPower){
+        if((score - 10) % 300 == 0){
+            ticks = 300;
+            currentPower = GODMODE;
+        } else if((score - 10) % 150 == 0){
+            currentPower = BETTERAPPLE;
+        } else if((score - 10) % 50 == 0){
+            currentPower = SPEEDUP;
+        }
+    }
+    isPower = false;
+}
+//--------------------------------------------------------------
 void GameState::drawFood() {
     ofSetColor(ofColor::red);
     if(foodSpawned) {
+        if(score > 0){
+            if(score % 300 == 0){
+                ofSetColor(ofColor::darkViolet);
+                isPower = true;
+            } else if (score % 150 == 0){
+                ofSetColor(ofColor::yellow);
+                isPower = true;
+            } else if(score % 50 == 0){
+                ofSetColor(ofColor::blue);
+                isPower = true;
+            }
+        }
         ofDrawRectangle(currentFoodX*cellSize, currentFoodY*cellSize, cellSize, cellSize);
     }
 }

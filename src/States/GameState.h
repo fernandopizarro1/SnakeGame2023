@@ -4,7 +4,19 @@
 #include "Snake.h"
 #include "ofMain.h"
 
+enum Powerup{
+    NA, // Not available
+    SPEEDUP, 
+    BETTERAPPLE,
+    GODMODE
+};
+
 class GameState : public State {
+    private:
+        Powerup currentPower; 
+        int framenumdivisor = 10; 
+        int ticks = 0; 
+
     public:
         GameState();
         ~GameState();
@@ -13,7 +25,11 @@ class GameState : public State {
         void draw();
         void keyPressed(int key);
         void mousePressed(int x, int y, int button);
+        void usePower(); 
+        void resetPower();
+        void setPower();
         void foodSpawner();
+        void drawPower();
         void drawFood();
         void drawStartScreen();
         void drawLostScreen();
@@ -29,7 +45,9 @@ class GameState : public State {
         Snake* snake;
 
         bool foodSpawned = false;
-        
+        bool isPower = false;
+        bool startTimer = false;
+
         int score = 0;
         int currentFoodX;
         int currentFoodY;

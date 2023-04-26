@@ -6,7 +6,7 @@ Snake::Snake(int segmentSize, int boardSizeW, int boardSizeH) {
     body.push_back({9, 9});
     body.push_back({10, 9});
     body.push_back({11, 9});
-    this->direction = LEFT;
+    this->direction = NONE;
     this->crashed = false;
     this->segmentSize = segmentSize;
     this->boardSizeWidth = boardSizeW;
@@ -40,22 +40,30 @@ void Snake::update() {
     }
 
     if(oldHead[0] == -1 || oldHead[0] == boardSizeWidth || oldHead[1] == -1 || oldHead[1] == boardSizeHeight) {
+        if(activeGM){
+            this->direction = NONE; 
+            return;
+        }
         crashed = true;
         return;
     }
 
-    int prevX = oldHead[0];
-    int prevY = oldHead[1];
-    for (int i = 1; i < this->body.size(); i++) {
-        int currX = this->body[i][0];
-        int currY = this->body[i][1];
-        this->body[i][0] = prevX;
-        this->body[i][1] = prevY;
-        prevX = currX;
-        prevY = currY;
+    if(this->direction != NONE){
+        int prevX = oldHead[0];
+        int prevY = oldHead[1];
+        for (int i = 1; i < this->body.size(); i++) {
+            int currX = this->body[i][0];
+            int currY = this->body[i][1];
+            this->body[i][0] = prevX;
+            this->body[i][1] = prevY;
+            prevX = currX;
+            prevY = currY;
+        }
     }
 
-    checkSelfCrash();
+    if(!activeGM){
+        checkSelfCrash();
+    }
 }
 
 void Snake::draw() {
@@ -98,6 +106,9 @@ void Snake::checkSelfCrash() {
 void Snake::grow() {
     vector<int> newSegment = this->getTail();
     this->body.push_back(newSegment);
+    if(activeBA){
+        this->body.push_back(newSegment);
+    }
 }
 
 void Snake::removeTail(){
