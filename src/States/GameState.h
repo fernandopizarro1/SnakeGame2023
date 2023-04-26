@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Snake.h"
 #include "ofMain.h"
+#include "entities.h"
 
 class GameState : public State {
     public:
@@ -15,6 +16,8 @@ class GameState : public State {
         void mousePressed(int x, int y, int button);
         void foodSpawner();
         void drawFood();
+        void obstacleSpawner();
+        void drawObstacles();
         void drawStartScreen();
         void drawLostScreen();
         void drawBoardGrid();
@@ -26,13 +29,23 @@ class GameState : public State {
         float progress = 0;
         int song_index=0;
 
+        vector<ofColor>colors = {
+            ofColor::red, ofColor::green, ofColor::blue, ofColor::cyan, ofColor::magenta, ofColor::beige, ofColor::brown, 
+            ofColor::coral, ofColor::crimson, ofColor::navy, ofColor::darkGreen, ofColor::hotPink, ofColor::gold, 
+            ofColor::orange, ofColor::royalBlue, ofColor::seaGreen, ofColor::turquoise, ofColor::violet, ofColor::yellowGreen
+        };
+        StaticEntity* wall;
+
         Snake* snake;
 
         bool foodSpawned = false;
+        bool wallSpawned = false;
         
         int score = 0;
         int currentFoodX;
         int currentFoodY;
+        int currentObstacleX;
+        int currentObstacleY;
 
         int boardSizeWidth, boardSizeHeight;
         int cellSize; // Pixels

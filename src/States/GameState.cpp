@@ -31,7 +31,7 @@ void GameState::reset() {
 void GameState::update() {
     ofSoundUpdate();
     if (sound.getPosition() >= .99) {
-        if (song_index < (songs.size() - 1)) {
+        if (song_index < (int)(songs.size() - 1)) {
             changeSong(songs[song_index + 1]);
             song_index++;
         } else {
@@ -55,6 +55,7 @@ void GameState::update() {
     }
 
     foodSpawner();
+    obstacleSpawner();
     if(ofGetFrameNum() % 10 == 0) {
         snake->update();
     }
@@ -66,6 +67,7 @@ void GameState::draw() {
     snake->draw();
     drawFood();
     drawScore();
+    drawObstacles();
 }
 //--------------------------------------------------------------
 void GameState::keyPressed(int key) {
@@ -94,8 +96,12 @@ void GameState::keyPressed(int key) {
         case 'p':
             setNextState("PauseState");
             setFinished(true);
+            break;
         case 's':
             sound.setPosition(.99);
+            break;
+        case 'w':
+            wallSpawned = false;
             break;
     }
 }
@@ -123,6 +129,41 @@ void GameState::drawFood() {
         ofDrawRectangle(currentFoodX*cellSize, currentFoodY*cellSize, cellSize, cellSize);
     }
 }
+//--------------------------------------------------------------
+void GameState::obstacleSpawner() {
+    if (!wallSpawned) {  // Create wall only if it doesn't already exist
+        bool isInSnakeBody;
+        do {
+            isInSnakeBody = false;
+            currentObstacleX = ofRandom(1, boardSizeWidth-1);
+            currentObstacleY = ofRandom(1, boardSizeHeight-1);
+            for(unsigned int i = 0; i < snake->getBody().size(); i++) {
+                if(currentObstacleX == snake->getBody()[i][0] and currentObstacleY == snake->getBody()[i][1]) {
+                    isInSnakeBody = true;
+                }
+            }
+        } while(isInSnakeBody);
+        wallSpawned = true;
+        
+        int randomWidth = ceil(ofRandom(3))*cellSize;
+        int randomHeight = ceil(ofRandom(3))*cellSize;
+
+        if(ofRandom(1) < 0.5) {
+            randomWidth = cellSize; // Set width to 1 and height to a random value
+        } else {
+            randomHeight = cellSize; // Set height to 1 and width to a random value
+        }
+
+        wall = new StaticEntity(ceil(ofRandom(54))*cellSize, ceil(ofRandom(29))*cellSize, randomWidth, randomHeight, colors[ofRandom(colors.size()-1)]);
+    }
+}
+//--------------------------------------------------------------
+void GameState::drawObstacles() {
+    if (wall != nullptr) {  // Draw wall only if it exists
+        wall->draw();
+    }
+}
+
 //--------------------------------------------------------------
 void GameState::drawStartScreen() {
     ofSetColor(ofColor::black);
