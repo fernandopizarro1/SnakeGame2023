@@ -122,6 +122,9 @@ void GameState::keyPressed(int key) {
         case 'b':
             usePower();
             break;
+        case 'w':
+            wallSpawned = false;
+            break;
     }
 }
 //--------------------------------------------------------------
@@ -142,9 +145,6 @@ void GameState::usePower(){
             break;
         case NA:
             startTimer = false;
-            break;
-        case 'w':
-            wallSpawned = false;
             break;
     }
 }
@@ -175,6 +175,7 @@ void GameState::foodSpawner() {
 }
 //--------------------------------------------------------------
 void GameState::drawPower(){
+    ofSetColor(ofColor::white);
     if(currentPower == SPEEDUP){
         ofDrawBitmapString("Speed up is available! Press B to use it.", 0, 15);
     } else if(currentPower == BETTERAPPLE){
