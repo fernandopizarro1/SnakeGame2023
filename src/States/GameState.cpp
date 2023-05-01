@@ -33,6 +33,8 @@ void GameState::reset() {
 }
 //--------------------------------------------------------------
 void GameState::update() {
+    decay_ticks++; 
+
     ofSoundUpdate();
     if (sound.getPosition() >= .99) {
         if (song_index < (int)(songs.size() - 1)) {
@@ -43,12 +45,22 @@ void GameState::update() {
             changeSong(songs[song_index]);
         }
     }
-    
+
+    if(decay_ticks % 60 == 0 && red_decay > 150 && green_decay < 75){
+        red_decay -= 3.5; // (255 - 150) / 30 = 3.5 * sec ; to update the color accordingly
+        green_decay += 2.5; // 75 / 30 = 2.5 * sec 
+    } 
+
+    if(decay_ticks % 1800 == 0 && !isPower){  // (60 updates * sec) * (30 sec) = 1800
+        decay_ticks = 0;
+        foodSpawned = false;
+    }
+
     if(startTimer){
         currentPower = NA;
-        ticks++;
+        power_ticks++;
     }
-    if(ticks == 900){
+    if(power_ticks == 900){
         resetPower();
     }
 
@@ -79,10 +91,14 @@ void GameState::update() {
 void GameState::draw() {
     drawBoardGrid();
     snake->draw();
-    drawFood();
+    if(score % 50 == 0 && score > 0){
+        drawPower();
+    } else {
+        drawFood();
+    }
     drawScore();
     drawObstacles();
-    drawPower();
+    drawPowerIndicator();
     if(startTimer){
         ofSetColor(ofColor::white);
         ofDrawBitmapString("Your powerup is active, you cannot pickup any other powerups in the meantime!", 0, 30);
@@ -151,7 +167,7 @@ void GameState::usePower(){
 //--------------------------------------------------------------
 void GameState::resetPower(){
     startTimer = false;
-    ticks = 1;
+    power_ticks = 1;
     framenumdivisor = 10;
     snake->SetActiveBA(false);
     snake->SetActiveGM(false);
@@ -171,10 +187,13 @@ void GameState::foodSpawner() {
             }
         } while(isInSnakeBody);
         foodSpawned = true;
+        red_decay = 255;
+        green_decay = 0;
+        decay_ticks = 0;
     }
 }
 //--------------------------------------------------------------
-void GameState::drawPower(){
+void GameState::drawPowerIndicator(){
     ofSetColor(ofColor::white);
     if(currentPower == SPEEDUP){
         ofDrawBitmapString("Speed up is available! Press B to use it.", 0, 15);
@@ -188,7 +207,7 @@ void GameState::drawPower(){
 void GameState::setPower(){
     if(isPower){
         if((score - 10) % 300 == 0){
-            ticks = 300;
+            power_ticks = 300;
             currentPower = GODMODE;
         } else if((score - 10) % 150 == 0){
             currentPower = BETTERAPPLE;
@@ -200,7 +219,13 @@ void GameState::setPower(){
 }
 //--------------------------------------------------------------
 void GameState::drawFood() {
-    ofSetColor(ofColor::red);
+    ofSetColor(red_decay, green_decay, 0);
+    if(foodSpawned) {
+        ofDrawRectangle(currentFoodX*cellSize, currentFoodY*cellSize, cellSize, cellSize);
+    }
+}
+//--------------------------------------------------------------
+void GameState::drawPower() {
     if(foodSpawned) {
         if(score > 0){
             if(score % 300 == 0){
@@ -208,12 +233,11 @@ void GameState::drawFood() {
                 isPower = true;
             } else if (score % 150 == 0){
                 ofSetColor(ofColor::yellow);
-                isPower = true;
             } else if(score % 50 == 0){
                 ofSetColor(ofColor::blue);
-                isPower = true;
             }
         }
+        isPower = true;
         ofDrawRectangle(currentFoodX*cellSize, currentFoodY*cellSize, cellSize, cellSize);
     }
 }

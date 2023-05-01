@@ -16,7 +16,10 @@ class GameState : public State {
     private:
         Powerup currentPower; 
         int framenumdivisor = 10; 
-        int ticks = 0; 
+        int power_ticks = 0; 
+        float red_decay = 255; // needs to be 150 for brown
+        float green_decay = 0; // needs to be 75 for brown
+        int decay_ticks = 0; // timer for decay
 
     public:
         GameState();
@@ -30,8 +33,9 @@ class GameState : public State {
         void resetPower();
         void setPower();
         void foodSpawner();
-        void drawPower();
+        void drawPowerIndicator();
         void drawFood();
+        void drawPower();
         void obstacleSpawner();
         void drawObstacles();
         void drawStartScreen();
