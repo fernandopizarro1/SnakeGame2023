@@ -206,10 +206,10 @@ void GameState::drawPowerIndicator(){
 //--------------------------------------------------------------
 void GameState::setPower(){
     if(isPower){
-        if((score - 10) % 300 == 0){
+        if((score - 10) % 150 == 0){
             power_ticks = 300;
             currentPower = GODMODE;
-        } else if((score - 10) % 150 == 0){
+        } else if((score - 10) % 100 == 0){
             currentPower = BETTERAPPLE;
         } else if((score - 10) % 50 == 0){
             currentPower = SPEEDUP;
@@ -227,15 +227,13 @@ void GameState::drawFood() {
 //--------------------------------------------------------------
 void GameState::drawPower() {
     if(foodSpawned) {
-        if(score > 0){
-            if(score % 300 == 0){
-                ofSetColor(ofColor::darkViolet);
-                isPower = true;
-            } else if (score % 150 == 0){
-                ofSetColor(ofColor::yellow);
-            } else if(score % 50 == 0){
-                ofSetColor(ofColor::blue);
-            }
+        if(score % 150 == 0){
+            ofSetColor(ofColor::darkViolet);
+            isPower = true;
+        } else if (score % 100 == 0){
+            ofSetColor(ofColor::yellow);
+        } else if(score % 50 == 0){
+            ofSetColor(ofColor::blue);
         }
         isPower = true;
         ofDrawRectangle(currentFoodX*cellSize, currentFoodY*cellSize, cellSize, cellSize);
