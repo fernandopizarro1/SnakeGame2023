@@ -19,6 +19,9 @@ class Entity {
 
         virtual void update() = 0;
         virtual void draw() = 0;
+
+        int getWidth() { return w; }
+        int getHeight() { return h; }
 };
 
 

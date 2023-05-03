@@ -6,6 +6,7 @@ GameState::GameState() {
     sound.setVolume(1);               // Sets the song volume 
     sound.play();
     foodSpawned = false;
+    wallSpawned = false;
     cellSize = 25;
     boardSizeWidth = 55;
     boardSizeHeight = 30;
@@ -22,6 +23,7 @@ void GameState::reset() {
         delete snake;
         snake = new Snake(cellSize, boardSizeWidth, boardSizeHeight);
         foodSpawned = false;
+        wallSpawned = false;
         score = 0; 
         setRestart(false);
         resetPower(); 
@@ -82,6 +84,22 @@ void GameState::update() {
     
     foodSpawner();
     obstacleSpawner();
+    
+    for(int i = 0; i < wall->getWidth() / cellSize; i++){
+        if(snake->getHead()[0] == currentObstacleX + i && snake->getHead()[1] == currentObstacleY){
+            this->setNextState("LoseState");
+            this->setFinished(true); 
+            this->setRestart(true);
+        }
+    }
+
+    for(int i = 0; i < wall->getHeight() / cellSize; i++){
+        if(snake->getHead()[0] == currentObstacleX && snake->getHead()[1] == currentObstacleY + i){
+            this->setNextState("LoseState");
+            this->setFinished(true);
+            this->setRestart(true);
+        }
+    }
     if(ofGetFrameNum() % framenumdivisor == 0) {
         snake->update();
     }
@@ -255,8 +273,8 @@ void GameState::obstacleSpawner() {
         } while(isInSnakeBody);
         wallSpawned = true;
         
-        int randomWidth = ceil(ofRandom(3))*cellSize;
-        int randomHeight = ceil(ofRandom(3))*cellSize;
+        int randomWidth = ceil(ofRandom(1, 5))*cellSize;
+        int randomHeight = ceil(ofRandom(1, 5))*cellSize;
 
         if(ofRandom(1) < 0.5) {
             randomWidth = cellSize; // Set width to 1 and height to a random value
@@ -264,7 +282,7 @@ void GameState::obstacleSpawner() {
             randomHeight = cellSize; // Set height to 1 and width to a random value
         }
 
-        wall = new StaticEntity(ceil(ofRandom(54))*cellSize, ceil(ofRandom(29))*cellSize, randomWidth, randomHeight, colors[ofRandom(colors.size()-1)]);
+        wall = new StaticEntity(currentObstacleX*cellSize, currentObstacleY*cellSize, randomWidth, randomHeight, colors[ofRandom(colors.size()-1)]);
     }
 }
 //--------------------------------------------------------------
