@@ -85,6 +85,7 @@ void GameState::update() {
     
     foodSpawner();
     obstacleSpawner();
+    //idk whats happening 
 
     for(StaticEntity* wall : walls) {
         for(int j = 0; j < wall->getWidth() / cellSize; j++){
