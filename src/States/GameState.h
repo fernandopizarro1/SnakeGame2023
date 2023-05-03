@@ -20,6 +20,7 @@ class GameState : public State {
         float red_decay = 255; // needs to be 150 for brown
         float green_decay = 0; // needs to be 75 for brown
         int decay_ticks = 0; // timer for decay
+        vector<StaticEntity*> walls;
 
     public:
         GameState();
@@ -54,7 +55,7 @@ class GameState : public State {
             ofColor::coral, ofColor::crimson, ofColor::navy, ofColor::darkGreen, ofColor::hotPink, ofColor::gold, 
             ofColor::orange, ofColor::royalBlue, ofColor::seaGreen, ofColor::turquoise, ofColor::violet, ofColor::yellowGreen
         };
-        StaticEntity* wall;
+        //StaticEntity* wall;
 
         Snake* snake;
 

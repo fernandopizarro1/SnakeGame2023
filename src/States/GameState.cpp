@@ -29,6 +29,7 @@ void GameState::reset() {
         resetPower(); 
         isPower = false;
         currentPower = NA; 
+        walls.clear();
     }
     setFinished(false);
     setNextState("");
@@ -84,22 +85,25 @@ void GameState::update() {
     
     foodSpawner();
     obstacleSpawner();
-    
-    for(int i = 0; i < wall->getWidth() / cellSize; i++){
-        if(snake->getHead()[0] == currentObstacleX + i && snake->getHead()[1] == currentObstacleY){
-            this->setNextState("LoseState");
-            this->setFinished(true); 
-            this->setRestart(true);
+
+    for(StaticEntity* wall : walls) {
+        for(int j = 0; j < wall->getWidth() / cellSize; j++){
+            if(snake->getHead()[0] == wall->getX() / cellSize + j && snake->getHead()[1] == wall->getY() / cellSize){
+                this->setNextState("LoseState");
+                this->setFinished(true); 
+                this->setRestart(true);
+            }
+        }
+
+        for(int k = 0; k < wall->getHeight() / cellSize; k++){
+            if(snake->getHead()[0] == wall->getX() / cellSize && snake->getHead()[1] == wall->getY() / cellSize+ k){
+                this->setNextState("LoseState");
+                this->setFinished(true);
+                this->setRestart(true);
+            }
         }
     }
 
-    for(int i = 0; i < wall->getHeight() / cellSize; i++){
-        if(snake->getHead()[0] == currentObstacleX && snake->getHead()[1] == currentObstacleY + i){
-            this->setNextState("LoseState");
-            this->setFinished(true);
-            this->setRestart(true);
-        }
-    }
     if(ofGetFrameNum() % framenumdivisor == 0) {
         snake->update();
     }
@@ -259,36 +263,39 @@ void GameState::drawPower() {
 }
 //--------------------------------------------------------------
 void GameState::obstacleSpawner() {
-    if (!wallSpawned) {  // Create wall only if it doesn't already exist
-        bool isInSnakeBody;
-        do {
-            isInSnakeBody = false;
-            currentObstacleX = ofRandom(1, boardSizeWidth-1);
-            currentObstacleY = ofRandom(1, boardSizeHeight-1);
-            for(unsigned int i = 0; i < snake->getBody().size(); i++) {
-                if(currentObstacleX == snake->getBody()[i][0] and currentObstacleY == snake->getBody()[i][1]) {
-                    isInSnakeBody = true;
+    if (!wallSpawned) {
+        for(int i = 0; i < 10; i++){
+            bool isInSnakeBody;
+            do {
+                isInSnakeBody = false;
+                currentObstacleX = ofRandom(1, boardSizeWidth-1);
+                currentObstacleY = ofRandom(1, boardSizeHeight-1);
+                for(unsigned int i = 0; i < snake->getBody().size(); i++) {
+                    if(currentObstacleX == snake->getBody()[i][0] and currentObstacleY == snake->getBody()[i][1]) {
+                        isInSnakeBody = true;
+                    }
                 }
+            } while(isInSnakeBody);
+            wallSpawned = true;
+            
+            int randomWidth = ceil(ofRandom(1, 5))*cellSize;
+            int randomHeight = ceil(ofRandom(1, 5))*cellSize;
+
+            if(ofRandom(1) < 0.5) {
+                randomWidth = cellSize; // Set width to 1 and height to a random value
+            } else {
+                randomHeight = cellSize; // Set height to 1 and width to a random value
             }
-        } while(isInSnakeBody);
-        wallSpawned = true;
-        
-        int randomWidth = ceil(ofRandom(1, 5))*cellSize;
-        int randomHeight = ceil(ofRandom(1, 5))*cellSize;
-
-        if(ofRandom(1) < 0.5) {
-            randomWidth = cellSize; // Set width to 1 and height to a random value
-        } else {
-            randomHeight = cellSize; // Set height to 1 and width to a random value
-        }
-
-        wall = new StaticEntity(currentObstacleX*cellSize, currentObstacleY*cellSize, randomWidth, randomHeight, colors[ofRandom(colors.size()-1)]);
+            walls.push_back(new StaticEntity(currentObstacleX*cellSize, currentObstacleY*cellSize, randomWidth, randomHeight, colors[ofRandom(colors.size()-1)]));
+        } 
     }
 }
 //--------------------------------------------------------------
 void GameState::drawObstacles() {
-    if (wall != nullptr) {  // Draw wall only if it exists
-        wall->draw();
+    for (StaticEntity* wall : walls){
+        if (wall != nullptr) {  // Draw wall only if it exists
+            wall->draw();
+        }
     }
 }
 
