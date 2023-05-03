@@ -50,8 +50,8 @@ class GameState : public State {
         int song_index=0;
 
         vector<ofColor>colors = {
-            ofColor::red, ofColor::green, ofColor::blue, ofColor::cyan, ofColor::magenta, ofColor::beige, ofColor::brown, 
-            ofColor::coral, ofColor::crimson, ofColor::navy, ofColor::darkGreen, ofColor::hotPink, ofColor::gold, 
+            ofColor::green, ofColor::cyan, ofColor::magenta, ofColor::beige, ofColor::brown, 
+            ofColor::navy, ofColor::darkGreen, ofColor::hotPink, ofColor::gold, 
             ofColor::orange, ofColor::royalBlue, ofColor::seaGreen, ofColor::turquoise, ofColor::violet, ofColor::yellowGreen
         };
         StaticEntity* wall;
