@@ -43,9 +43,10 @@ class GameState : public State {
         void drawBoardGrid();
         void drawScore();
         void changeSong(string filename);
+        void gps();
 
         ofSoundPlayer sound;
-        vector<string>songs = {"80s_montage.mp3","cyberpunk_synthwave.mp3","Press_Fuse.mp3","welcome_to_the_grid.mp3"};
+        vector<string>songs = {"Press_Fuse.mp3","cyberpunk_synthwave.mp3","80s_montage.mp3","welcome_to_the_grid.mp3"};
         float progress = 0;
         int song_index=0;
 
@@ -62,6 +63,7 @@ class GameState : public State {
         bool wallSpawned = false;
         bool isPower = false;
         bool startTimer = false;
+        bool gps_on = false;
 
         int score = 0;
         int currentFoodX;

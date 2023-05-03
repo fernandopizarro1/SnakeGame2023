@@ -104,6 +104,12 @@ void GameState::update() {
         snake->update();
     }
 
+    if (gps_on)
+    {
+        gps();
+    }
+    
+
 }
 //--------------------------------------------------------------
 void GameState::draw() {
@@ -159,6 +165,9 @@ void GameState::keyPressed(int key) {
         case 'w':
             wallSpawned = false;
             break;
+        // case 'g':
+        //     gps_on = true;
+        //     break;
     }
 }
 //--------------------------------------------------------------
@@ -208,6 +217,32 @@ void GameState::foodSpawner() {
         red_decay = 255;
         green_decay = 0;
         decay_ticks = 0;
+    }
+}
+//--------------------------------------------------------------
+void drawLineX_gpsHelper(vector <int> head, int x, int cellSize, int currentFoodX){
+    if (head[0] == currentFoodX) {return;}
+    ofDrawRectangle(head[0]*cellSize, head[1]*cellSize, cellSize, cellSize);
+    head[0] += x;
+    drawLineX_gpsHelper(head, x, cellSize, currentFoodX);
+}
+
+void drawLineY_gpsHelper(vector <int> head, int y, int cellSize, int currentFoodY){
+    if (head[1] == currentFoodY) {return;}
+    ofDrawRectangle(head[0]*cellSize, head[1]*cellSize, cellSize, cellSize);
+    head[1] += y;
+    drawLineY_gpsHelper(head, y, cellSize, currentFoodY);
+}
+
+void GameState::gps(){
+    if (snake->getHead()[0] == currentFoodX && snake->getHead()[0] == currentFoodY) {return;}
+    int x_dir = (currentFoodX > snake->getHead()[0]) ? 1 : -1;
+    int y_dir = (currentFoodY > snake->getHead()[1]) ? 1 : -1;
+    if (snake->getHead()[0] != currentFoodX){
+        drawLineX_gpsHelper(snake->getHead(), x_dir, cellSize, currentFoodX);
+    }
+    if (snake->getHead()[1] != currentFoodY){
+        drawLineY_gpsHelper(snake->getHead(), y_dir, cellSize, currentFoodY);
     }
 }
 //--------------------------------------------------------------
