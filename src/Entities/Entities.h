@@ -20,12 +20,16 @@ class Entity {
         virtual void update() = 0;
         virtual void draw() = 0;
 
+        int getX() { return x; }
+        int getY() { return y; }
         int getWidth() { return w; }
         int getHeight() { return h; }
 };
 
 
 class StaticEntity : public Entity {
+    private: 
+        int r = ofRandom(40);
     public:
         StaticEntity(int x, int y, int w, int h, ofColor color) : Entity(x, y, w, h, color) {};
         void update() override {};
