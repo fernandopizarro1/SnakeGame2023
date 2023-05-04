@@ -20,6 +20,7 @@ class GameState : public State {
         float red_decay = 255; // needs to be 150 for brown
         float green_decay = 0; // needs to be 75 for brown
         int decay_ticks = 0; // timer for decay
+        int wall_counter = 10; 
         vector<StaticEntity*> walls;
 
     public:
@@ -38,6 +39,7 @@ class GameState : public State {
         void drawFood();
         void drawPower();
         void obstacleSpawner();
+        void removeObstacles();
         void drawObstacles();
         void drawStartScreen();
         void drawLostScreen();

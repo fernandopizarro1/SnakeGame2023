@@ -45,4 +45,6 @@ public:
 
     void SetActiveBA(bool a) { this->activeBA = a; }
     void SetActiveGM(bool g) { this->activeGM = g; }
+
+    int getActiveGM() { return activeGM; }
 };

@@ -2,7 +2,7 @@
 
 void StaticEntity::draw() {
         ofSetColor(this->color);
-        ofDrawRectRounded(this->x, this->y, this->w, this->h, this->r);
+        ofDrawRectangle(this->x, this->y, this->w, this->h);
 }
 //--------------------------------------------------------------
 void DynamicEntity::update()  {

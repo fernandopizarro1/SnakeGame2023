@@ -28,8 +28,6 @@ class Entity {
 
 
 class StaticEntity : public Entity {
-    private: 
-        int r = ofRandom(40);
     public:
         StaticEntity(int x, int y, int w, int h, ofColor color) : Entity(x, y, w, h, color) {};
         void update() override {};

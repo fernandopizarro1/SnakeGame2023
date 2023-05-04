@@ -85,22 +85,26 @@ void GameState::update() {
     
     foodSpawner();
     obstacleSpawner();
-    //idk whats happening 
-
-    for(StaticEntity* wall : walls) {
-        for(int j = 0; j < wall->getWidth() / cellSize; j++){
-            if(snake->getHead()[0] == wall->getX() / cellSize + j && snake->getHead()[1] == wall->getY() / cellSize){
-                this->setNextState("LoseState");
-                this->setFinished(true); 
-                this->setRestart(true);
+    for(int i = 0; i < walls.size(); i++) {
+        for(int j = 0; j < walls[i]->getWidth() / cellSize; j++){
+            if(snake->getHead()[0] == walls[i]->getX() / cellSize + j && snake->getHead()[1] == walls[i]->getY() / cellSize){
+                if(!snake->getActiveGM()){
+                    setNextState("LoseState");
+                    setFinished(true);
+                    setRestart(true);
+                }
+                walls.erase(walls.begin() + i);
             }
         }
 
-        for(int k = 0; k < wall->getHeight() / cellSize; k++){
-            if(snake->getHead()[0] == wall->getX() / cellSize && snake->getHead()[1] == wall->getY() / cellSize+ k){
-                this->setNextState("LoseState");
-                this->setFinished(true);
-                this->setRestart(true);
+        for(int k = 0; k < walls[i]->getHeight() / cellSize; k++){
+            if(snake->getHead()[0] == walls[i]->getX() / cellSize && snake->getHead()[1] == walls[i]->getY() / cellSize+ k){
+                if(!snake->getActiveGM()){
+                    setNextState("LoseState");
+                    setFinished(true);
+                    setRestart(true);
+                }
+                walls.erase(walls.begin() + i);
             }
         }
     }
@@ -132,6 +136,7 @@ void GameState::draw() {
         ofSetColor(ofColor::white);
         ofDrawBitmapString("Your powerup is active, you cannot pickup any other powerups in the meantime!", 0, 30);
     }
+    ofDrawBitmapString("Press w if you want to increase the difficulty.", 0, 45);
 }
 //--------------------------------------------------------------
 void GameState::keyPressed(int key) {
@@ -168,11 +173,16 @@ void GameState::keyPressed(int key) {
             usePower();
             break;
         case 'w':
+            if(wall_counter == 30) break;
+            wall_counter += 10;
             wallSpawned = false;
             break;
-        // case 'g':
-        //     gps_on = true;
-        //     break;
+        case 'r':
+            removeObstacles();
+            break;
+        case 'g':
+            gps_on = true;
+             break;
     }
 }
 //--------------------------------------------------------------
@@ -208,8 +218,10 @@ void GameState::resetPower(){
 void GameState::foodSpawner() {
     if(!foodSpawned) {
         bool isInSnakeBody;
+        bool isInWalls;
         do {
             isInSnakeBody = false;
+            isInWalls = false;
             currentFoodX = ofRandom(1, boardSizeWidth-1);
             currentFoodY = ofRandom(1, boardSizeHeight-1);
             for(unsigned int i = 0; i < snake->getBody().size(); i++) {
@@ -217,7 +229,12 @@ void GameState::foodSpawner() {
                     isInSnakeBody = true;
                 }
             }
-        } while(isInSnakeBody);
+            for(unsigned int j = 0; j < walls.size(); j++){
+                if(currentFoodX == (walls[j]->getX() / cellSize) + (walls[j]->getWidth() / cellSize) || currentFoodY == (walls[j]->getY() / cellSize) + (walls[j]->getHeight() / cellSize)){
+                    isInWalls = true;
+                }
+            }
+        } while(isInSnakeBody || isInWalls);
         foodSpawned = true;
         red_decay = 255;
         green_decay = 0;
@@ -324,6 +341,14 @@ void GameState::obstacleSpawner() {
             }
             walls.push_back(new StaticEntity(currentObstacleX*cellSize, currentObstacleY*cellSize, randomWidth, randomHeight, colors[ofRandom(colors.size()-1)]));
         } 
+    }
+}
+//--------------------------------------------------------------
+void GameState::removeObstacles(){
+    if(wall_counter == 10) return;
+    wall_counter -= 10;
+    for(int i = 0; i < 10; i++){
+        walls.erase(walls.begin() + ofRandom(walls.size()));
     }
 }
 //--------------------------------------------------------------
