@@ -16,6 +16,7 @@ GameState::GameState() {
 //--------------------------------------------------------------
 GameState::~GameState() {
     delete snake;
+    walls.clear();
 }
 //--------------------------------------------------------------
 void GameState::reset() {
@@ -30,6 +31,7 @@ void GameState::reset() {
         isPower = false;
         currentPower = NA; 
         walls.clear();
+        wall_counter = 10;
     }
     setFinished(false);
     setNextState("");
